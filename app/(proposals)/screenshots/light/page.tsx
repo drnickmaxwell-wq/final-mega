@@ -1,26 +1,49 @@
 "use client";
 import dynamic from "next/dynamic";
-import { SMHLayouts, SMHTokens } from "@/lib/design/smh.design";
-import { HeroSection, CardsGrid, CTASection } from "@/components/renderer/SectionRenderer";
 
-// robust dynamic imports (default OR named export)
+// Reuse the same SEO & luxury content components
+import SeoHomeJsonLd from "@/components/proposals/ai24/SeoHomeJsonLd";
+import HeroAurora from "@/components/proposals/ai24/HeroAurora";
+import TreatmentsLux from "@/components/proposals/ai24/TreatmentsLux";
+import TestimonialsCarousel from "@/components/proposals/ai24/TestimonialsCarousel";
+
+// Global chrome (so we don't overwrite anything)
 const Header     = dynamic(() => import("@/components/layout/Header").then(m => m.default ?? (m as any).Header), { ssr:false });
 const Footer     = dynamic(() => import("@/components/layout/Footer").then(m => m.default ?? (m as any).Footer), { ssr:false });
 const ActionDock = dynamic(() => import("@/components/layout/ActionDock").then(m => m.default ?? (m as any).ActionDock), { ssr:false });
 
+// Shared hero + features
+const Hero       = dynamic(() => import("@/components/hero/HeroVideo").then(m => m.default ?? (m as any).HeroVideo), { ssr:false });
+const Features   = dynamic(() => import("@/components/sections/FeaturesSection").then(m => m.default ?? (m as any).FeaturesSection), { ssr:false });
+
+// Reuse AI24 CTA (looks great)
+const CTASection = dynamic(() => import("@/components/proposals/ai24/CTASectionAi24").then(m => m.default ?? (m as any).CTASectionAi24), { ssr:false });
+
 export default function Page() {
-  const sections = SMHLayouts?.homepage?.sections || SMHLayouts?.layoutByPage?.homepage?.sections || [];
   return (
     <>
+      <SeoHomeJsonLd />
+
       <Header />
-      {sections.map((s: any, i: number) => {
-        if (s.name === "hero")     return <HeroSection key={i} section={s} />;
-        if (s.name === "services") return <CardsGrid key={i} section={s} kind="cards" />;
-        if (s.name === "cta")      return <CTASection key={i} section={s} tokens={SMHTokens} />;
-        if (s.name === "about")    return <CardsGrid key={i} section={s} kind="stats" />;
-        if (s.name === "location") return <CardsGrid key={i} section={s} kind="contactInfo" />;
-        return null;
-      })}
+
+      <main className="relative">
+        <Hero
+          videoSrc="/videos/hero/coastal-dental-hero.mp4"
+          posterSrc="/videos/hero/hero-poster.jpg"
+        />
+        <HeroAurora />
+        <div
+          className="absolute inset-0 z-20 pointer-events-none"
+          style={{ background: "linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.15))" }}
+          aria-hidden
+        />
+      </main>
+
+      <Features />
+      <TreatmentsLux />
+      <TestimonialsCarousel />
+      <CTASection />
+
       <Footer />
       <ActionDock />
     </>

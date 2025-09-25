@@ -5,20 +5,20 @@ import React, { useMemo } from "react";
 export default function HeroAurora({ className = "" }: { className?: string }) {
   const reduce = typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
 
-  // Create a few bubbles deterministically so SSR doesn't mismatch
+  // deterministic bubbles so SSR/hydration stay in sync
   const bubbles = useMemo(
     () =>
       Array.from({ length: 16 }).map((_, i) => ({
         left: `${(i * 61) % 100}%`,
-        size: 10 + ((i * 37) % 24), // 10–34px
-        duration: 6 + ((i * 17) % 12), // 6–18s
-        delay: (i * 0.7) % 5, // 0–5s
+        size: 10 + ((i * 37) % 24),      // 10–34px
+        duration: 6 + ((i * 17) % 12),  // 6–18s
+        delay: (i * 0.7) % 5,           // 0–5s
       })),
     []
   );
 
   return (
-    <div className={`absolute inset-0 -z-10 ${className}`} aria-hidden>
+    <div className={`absolute inset-0 z-10 pointer-events-none ${className}`} aria-hidden>
       {/* Aurora blobs */}
       <div className="absolute -top-32 -left-24 w-[420px] h-[420px] rounded-full blur-3xl opacity-40"
            style={{ background: "radial-gradient(closest-side, var(--turquoise), transparent)" }} />
